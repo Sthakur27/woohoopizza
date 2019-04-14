@@ -48,7 +48,6 @@ create table BreadStick(
     id int not null auto_increment primary key,
 	base_data_id int not null,
 	name varchar(255) not null,
-	type varchar(255) not null,
 	FOREIGN KEY (base_data_id) REFERENCES FoodBaseData(id)
 );
 
@@ -123,6 +122,22 @@ insert into FoodBaseData values (10,110,1.35);
 insert into FoodBaseData values (11,150,1.70);
 insert into FoodBaseData values (12,220,2.15);
 insert into Drink(10,'Coke(Small)');
+insert into Drink(10,'Mountain Dew(Small)');
+insert into Drink(10,'Crush(Small)');
+insert into Drink(11,'Coke(Medium)');
+insert into Drink(11,'Mountain Dew(Medium)');
+insert into Drink(11,'Crush(Medium)');
+insert into Drink(12,'Coke(Large)');
+insert into Drink(12,'Mountain Dew(Large)');
+insert into Drink(12,'Crush(Large)');
+
+insert into FoodBaseData values (13,660,5.35);
+insert into FoodBaseData values (14,780,6.70);
+insert into FoodBaseData values (15,750,6.90);
+insert into BreadStick(13,'Original');
+insert into BreadStick(14,'Cheesy Sticks');
+insert into BreadStick(15,'Garlic Sticks');
+
 
 
 
