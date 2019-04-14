@@ -71,9 +71,9 @@ create table Pizza_Order(
 
 create table Pizza_Topping(
 	id int not null auto_increment primary key,
-	pizza_id int not null,
+	pizza_order_id int not null,
 	topping_id int not null,
-	FOREIGN KEY (pizza_id) REFERENCES Pizza(id),
+	FOREIGN KEY (pizza_order_id) REFERENCES Pizza_Order(id),
 	FOREIGN KEY (topping_id) REFERENCES Topping(id)
 )
 
@@ -98,6 +98,7 @@ create table Drink_Order(
 
 -- insert data into database
 
+--four sizes of pizza: small, medium, large, x-large
 insert into FoodBaseData values (1,723,6.15);
 insert into Pizza(1,1);
 insert into FoodBaseData values (2,896,8.15);
