@@ -19,7 +19,6 @@ def sql_query(sql):
     db.close()
     return result
 
-
 def sql_execute(sql):
     db = mysql.connector.connect(**config['mysql.connector'])
     cursor = db.cursor()
@@ -28,7 +27,6 @@ def sql_execute(sql):
     cursor.close()
     db.close()
 
-
 #@app.route('/')
 def template_response():
     return render_template('home.html')
@@ -36,6 +34,11 @@ def template_response():
 def login_redirect():
     if not is_logged_in():
         redirect('/login')
+
+@app.route('/logout',methods=['GET'])
+def logout():
+    session['logged_in']=False
+    redirect('/login')
 
 def is_logged_in():
     if not session.get('logged_in'):
@@ -79,12 +82,12 @@ def menu():
 @app.route('/order/<int:order_id>', methods=['GET', 'POST'])
 def order_summary(order_id):
     login_redirect() #ensure user logged in
-    return render_template('home.html')
+    return render_template('ordersummary.html')
 
 @app.route('/user/history/<int:user_id>', methods=['GET', 'POST'])
 def order_history(user_id):
     login_redirect() #ensure user logged in
-    return render_template('home.html')
+    return render_template('userhistory.html')
 
 if __name__ == '__main__':
     app.run(**config['app'])
