@@ -62,9 +62,12 @@ def login():
     if request.method=='POST':
        #todo, try to login user, redirect if successful, error msg if bad creds
         if "email" in request.form:
-            book_id = int(request.form["buy-book"])
-            sql = "delete from book where id={book_id}".format(book_id=book_id)
-            sql_execute(sql)
+            print(request.form)
+			#print(request.form["email"])
+            #print(request.form["password"])
+            #book_id = int(request.form["buy-book"])
+            #sql = "delete from book where id={book_id}".format(book_id=book_id)
+            #sql_execute(sql)
         return redirect('/')
     else:
         return render_template('login.html')
@@ -91,3 +94,4 @@ def order_history(user_id):
 
 if __name__ == '__main__':
     app.run(**config['app'])
+
