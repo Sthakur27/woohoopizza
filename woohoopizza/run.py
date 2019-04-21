@@ -60,9 +60,24 @@ def newuser():
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method=='POST':
-       #todo, try to login user, redirect if successful, error msg if bad creds
-        if "email" in request.form:
-            print(request.form)
+		submit_button
+        if(request.form['submit_button'] == "Sign In"):
+            email = request.form["email"]
+            sql = "select * from User where email = {};".format(email)
+            existing_user = sql_query(sql)
+            print("existing user: {}".format(existing_user))
+            passwordhash = hash(request.form["password"])
+            sql = "insert into User values ({},{},{});".format(email,passwordhash,"phonenumber")
+            sql_execute(sql)			
+		else:
+            email = request.form["email"]
+            passwordhash = hash(request.form["password"])
+            sql = "select password from User where email = {};".format(email)
+            real_phash = sql_query(sql)
+            print(real_phash)
+        #todo, try to login user, redirect if successful, error msg if bad creds
+        #if "email" in request.form:
+            #print(request.form)
 			#print(request.form["email"])
             #print(request.form["password"])
             #book_id = int(request.form["buy-book"])
