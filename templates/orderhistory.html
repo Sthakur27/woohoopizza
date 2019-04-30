@@ -135,29 +135,46 @@ h3{
   border-radius: 50%;
   background: white;
 
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
 </style>
 </head>
 <body>
 
-<h1>Order History</h1>
+<h1>Order History for {{username}}</h1>
 <div class = "rightcorner">
-  <h2><a href = "login.html">Logout</a></h2>
+  <h2><a href = "/logout">Logout</a></h2>
 </div>
 
 <div class = "leftcorner">
-  <h2>Username</h2>
+  <h2><a href = "/user/history">{{session.username}}</a></h2>
 </div>
 
-<div class="row">
-  <div class="column" style="background-color:#52a7e0;">
-    <p id="order_id">Order ID<p>
-    <tr>100010011</td>
-  </div>
-  <div class="column" style="background-color:#52a7e0;">
-    <p id="date">Date<p>
-    <tr>Jan 10, 2019</tr>
-  </div>
-</div>
-
+<table>
+<tr>
+<th> Order Id </th>
+<th> Date </th>
+</tr>
+{% for order in orders %}
+<TR>
+   <TD><a href= "/order/{{order[0]}}">{{order[0]}}</a></TD>
+   <TD>{{order[1]}}</TD>
+</TR>
+{% endfor %}
+</table>
 </body>
 </html>
+{% endblock %}

@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+
+{% block page_content %}
 <html>
 <head>
 <style>
@@ -414,10 +418,6 @@ h3{
     }
 
     document.getElementById("breadstick_display").innerHTML = breadstick_d;
-<<<<<<< HEAD
-=======
-
->>>>>>> f08596a5bbc65866d3d7ba2f59156f77146605a0
   }
   function sendData(){
     orderData = [];
@@ -427,9 +427,9 @@ h3{
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "/menu", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
+    xhr.send(JSON.stringify(
       orderData
-    }));
+    ));
     console.log("Sent Data");
   }
 </script>
@@ -438,11 +438,11 @@ h3{
 <h1>Woohoo Pizza Logo Placeholder</h1>
 
 <div class = "rightcorner">
-  <h2><a href = "login.html">Logout</a></h2>
+  <h2><a href = "/logout">Logout</a></h2>
 </div>
 
 <div class = "leftcorner">
-  <h2>{{session.username}}</h2>
+  <h2><a href = "/user/history">{{session.username}}</a></h2>
 </div>
 
 <div class="row">

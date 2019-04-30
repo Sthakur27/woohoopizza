@@ -48,7 +48,7 @@ def login_redirect():
 @app.route('/logout',methods=['GET'])
 def logout():
     session['logged_in']=False
-    redirect('/login')
+    return redirect('/login')
 
 def is_logged_in():
     if not session.get('logged_in'):
@@ -142,6 +142,7 @@ def home():
             sql = "INSERT into Drink_Order (drink_id,order_id,quantity) values ({},{},{});".format(dtypes[d['typeText']]+dsizes[d['size']],order_id,d['amount'])
             #print(sql)
             sql_execute(sql)
+        flash("Order added successfully","bg-success")
         #return redirect("/order/confirm/{}".format(order_id))
         
         
@@ -160,7 +161,13 @@ def order_analysis(order_id):
         sql += " where pt.pizza_order_id={} and pt.topping_id=t.id and t.base_data_id=fbd.id".format(pizza_orders[i][0])
         sql += " group by t.name;"
         toppings = sql_query(sql)
+        print(list(toppings))
         pizza_orders[i] = list(pizza_orders[i])
+        txt = ""
+        for t in toppings:
+            ttxt = t[0] + " " + str(t[1]) + " " + str(t[2])
+            txt = txt + ttxt
+        pizza_orders[i].append(txt)
         pizza_orders[i].append(toppings)
     
     #get drinks
@@ -260,8 +267,8 @@ def order_summary(order_id):
 def order_history():
     login_redirect() #ensure user logged in
     sql = "SELECT uo.id, uo.placed_on from UserOrder uo, User u where u.email=\"{}\" and uo.user_id = u.id".format(session['username'])
-    orders = sql_execute(sql)
-    return render_template('user_history.html',orders = orders, username = session['username'])
+    orders = sql_query(sql)
+    return render_template('orderhistory.html',orders = orders, username = session['username'])
 
 if __name__ == '__main__':
     app.secret_key = 't13rulzlol'
