@@ -1,8 +1,10 @@
 import configparser
-from flask import Flask, render_template, request, redirect, session 
+from flask import Flask, render_template, request, redirect, session, flash 
 import hashlib
 import random
 import mysql.connector
+from flask_bootstrap import Bootstrap
+
 
 # Read configuration from file.
 config = configparser.ConfigParser()
@@ -10,6 +12,7 @@ config.read('config.ini')
 
 # Set up application server.
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 
 # Create a function for fetching data from the database.
 def sql_query(sql):
@@ -35,7 +38,7 @@ def sql_execute(sql):
 
 #@app.route('/')
 def template_response():
-    return render_template('home.html')
+    return render_template('login.html')
 
 def login_redirect():
     if not is_logged_in():
@@ -79,33 +82,37 @@ def myhash(password):
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method=='POST':
-        print(request.form)
+        #print(request.form)
         if(request.form['submit_button'] == "Sign Up"):
             email = request.form["email"]
             sql = "select * from User where email='{}';".format(email)
             existing_user = sql_query(sql)
             if(existing_user!=[]):
-                print("existing user found: {}".format(existing_user))
+                #print("existing user found: {}".format(existing_user))
+				flash("Error adding user, email \"{}\"already in use".format(email),"bg-error")
             else:
                 password = request.form["password"]
-                print(password)
+                #print(password)
                 passwordhash = myhash(password)
-                print(passwordhash)
+                #print(passwordhash)
                 sql = "insert into User (email,password_hash) values ('{}','{}');".format(email,passwordhash)
                 sql_execute(sql)
+				flash("User \"{}\" added".format(email),"bg-success")
         else:
             email = request.form["email"]
             passwordhash = myhash(request.form["password"])
             sql = "SELECT password_hash from User where email='{}'".format(email)
             real_phash = sql_query(sql)[0][0]
-            print(real_phash)
-            print(passwordhash)
+            #print(real_phash)
+            #print(passwordhash)
             if(passwordhash == real_phash):
-                print("match")
+                #print("match")
+				flash("Successfully Logged in","bg-success")
                 session['logged_in']=True
                 return redirect('/menu')
             else:
-                print("incorrect password")
+                #print("incorrect password")
+				flash("Incorrect password for \"{}\"".format(email),"bg-error")
             
         return redirect('/')
     else:
@@ -114,13 +121,13 @@ def login():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     login_redirect() #ensure user logged in
-    return render_template('home.html')
+    return render_template('login.html')
 
 @app.route('/menu', methods=['GET', 'POST'])
 def menu():
     login_redirect() #ensure user logged in
     print("at menu")
-    return render_template('home.html')
+    return render_template('login.html')
 
 @app.route('/order/<int:order_id>', methods=['GET', 'POST'])
 def order_summary(order_id):
@@ -133,6 +140,8 @@ def order_history(user_id):
     return render_template('userhistory.html')
 
 if __name__ == '__main__':
+    #bootstrap = Bootstrap()
     app.secret_key = 't13rulzlol'
     app.run(**config['app'])
+    #bootstrap = Bootstrap(app)
 
