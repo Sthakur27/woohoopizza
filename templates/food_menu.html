@@ -276,11 +276,8 @@ h3{
     }
 
     document.getElementById("pizza_display").innerHTML = pizza_d;
-    alert("Hello");
   }
-</script>
 
-<script> 
   var drinks = [];
 
   function Drink(d_size, d_type, d_amount){
@@ -360,25 +357,9 @@ h3{
     }
 
     document.getElementById("drink_display").innerHTML = drink_d;
-    alert(type);
   }
 
-  function sendData(){
-    orderData = [];
-    orderData.push(document.getElementById("pizza_display").innerHTML);
-    orderData.push(document.getElementById("drink_display").innerHTML);
-    orderData.push(document.getElementById("breadstick_display").innerHTML);
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/menu", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-      order: orderData
-    }));
-    console.log("Sent Data");
-}
-</script>
 
-<script>
   var breadsticks = [];
 
   function Breadstick(b_amount, b_type){
@@ -433,8 +414,20 @@ h3{
     }
 
     document.getElementById("breadstick_display").innerHTML = breadstick_d;
-    alert(amount);
 
+  }
+  function sendData(){
+    orderData = [];
+    orderData.push(pizzas);
+    orderData.push(breadsticks);
+    orderData.push(drinks);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/menu", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      orderData
+    }));
+    console.log("Sent Data");
   }
 </script>
 <body>
@@ -538,13 +531,8 @@ h3{
 
     <p id="pizza_display"></p>
     <p id="breadstick_display"></p>
-    <p id="drink_display"></p>
-
-<<<<<<< HEAD
-    <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
-=======
+    <p id="drink_display"></p>  
     <input type="submit" name = "submit_button" onclick = "sendData()" class="btn" value = "Submit Order">  
->>>>>>> 3f10c139f3f53c3de50419947cdb077a2af2775e
   </div>
 </div>
 
