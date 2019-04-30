@@ -62,9 +62,10 @@ h3{
   color:white;
   border-radius:4px;
   border: #27ae60 1px solid;
+  display: flex;
+
         
-  margin-top:20px;
-  margin-bottom:20px;
+  margin-left: auto;
   float:left;
   margin-left:16px;
   font-weight:800;
@@ -131,27 +132,174 @@ h3{
   border-radius: 50%;
   background: white;
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  padding: 12px 16px;
-  z-index: 1;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
 </style>
 </head>
+
+<script>
+  //Input Pizzas
+  var pizzas = [];
+
+  function Pizza(p_amount, t_pepperoni, t_mushroom, t_sausage, t_bacon, t_olive, p_size){
+    //Number
+    this.amount = p_amount;
+    //Toppings
+    this.pepperoni = t_pepperoni;
+    this.mushroom = t_mushroom;
+    this.sausage = t_sausage;
+    this.bacon = t_bacon;
+    this.olive = t_olive;
+    //Size
+    this.size = p_size;
+    //ID
+    this.ID = 0;
+    if(t_pepperoni){
+      ID += 1;
+    }
+    if(t_mushroom){
+      ID += 2;
+    }
+    if(t_sausage){
+      ID += 4;
+    }
+    if(t_bacon){
+      ID += 8;
+    }
+    if(t_olive){
+      ID += 16;
+    }
+    // if(p_size == "medium"){
+    //   ID += 64;
+    // }
+    // if(p_size == "large"){
+    //   ID += 128;
+    // }
+    // Toppings
+    // this.total_toppings = "";
+
+    // //Puralness
+    // this.plural = true;
+    // if(this.amount == 1){
+    //   plural = false;
+    // }
+    // if(plural){
+    //   this.pizza_name = "Pizzas"
+    // }
+    // else{
+    //   this.pizza_name = "Pizza"
+    // }
+
+    // //Order Text to print
+    // this.orderText = amount.toString() + " x " + size + " " + pizza_name + " with: " + total_toppings;
+  }
+
+  //Helper function for Pizza type
+  Pizza.prototype.calculateTotal_Toppings = function(){
+    // if(pepperoni){
+    //   this.total_toppings += "pepperoni, ";
+    // }
+    // if(sausage){
+    //   this.total_toppings += "sausage, ";
+    // }
+    // if(mushrooms){
+    //   this.total_toppings += "mushrooms, ";
+    // }
+    // if(bacon){
+    //   this.total_toppings += "bacon, ";
+    // }
+    // if(olives){
+    //   this.total_toppings += "olives, ";
+    // }
+    // if(!pepperoni && !sausage && !mushrooms && !bacon && !olives){
+    //   this.total_toppings = "plain";
+    // }
+  }
+
+  //Getters
+  Pizza.prototype.getID() = function(){
+    return this.ID;
+  }
+
+  Pizza.prototype.getAmount() = function(){
+    return this.amount;
+  }
+
+  Pizza.prototype.incrementOrderAmount(x) = function(x){
+    this.amount += x;
+  }
+
+  Pizza.prototype.checkPizzas = function(){
+    var exists = false;
+    for(i = 0; i < pizzas.length; i++){
+      if(this.getID() == pizzas[i].getID()){
+        pizzas[i].incrementOrderAmount(this.getAmount());
+        exists = true;
+      }
+    }
+    if(!exists){
+      pizzas.push(this);
+    }
+  }
+
+  function addPizza(){
+    var size = parseInt(document.querySelector("input[name=pizza_size]:checked").value);
+    var amount = parseInt(document.getElementById("pizza_amount").value);
+    var toppings = document.querySelectorAll("input[name=pizza_topping]:checked");
+    var pepperoni = false;
+    var mushroom = false;
+    var sausage = false;
+    var bacon = false;
+    var olive = false;
+    for(i = 0; i < toppings.length; i++){
+      switch(toppings[i].value){
+        case "pepperoni":
+          pepperoni = true;
+          break;
+        case "mushroom":
+          mushroom = true;
+          break;
+        case "sausage":
+          sausage = true;
+          break;
+        case "bacon":
+          bacon = true;
+          break;
+        case "olive":
+          olive = true;
+          break;
+      }
+    }
+
+
+    var p = new Pizza(amount, pepperoni, mushroom, sausage, bacon, olive, size);
+
+    // var pizza_d = ""
+
+    // for(int i = 0; i < pizzas.length; i++){
+    //   pizza_d += pizzas[i].amount() + " x " + pizzas[i].total_toppings() + pizzas[i].size() + " pizzas" + '\n'; 
+    // }
+
+    // document.getElementByID("pizza_display").innerHTML = pizza_d;
+    alert("Hello");
+  }
+</script>
+
+<script> 
+
+  class drink{
+    constuctor(size, type){
+      this.type = type;
+      this.size = size;
+    }
+  }
+
+  class breadsticks{
+    constructor(amount, type){
+      this.amount = amount;
+      this.type = type;
+    }
+  }
+
+</script>
 <body>
 
 <h1>Woohoo Pizza Logo Placeholder</h1>
@@ -168,33 +316,89 @@ h3{
   <div class="column" style="background-color:#52a7e0;">
     <h2>Pizza</h2>
     <label class="container">Small
-      <input type="radio" checked="checked" name="pizza_size">
+      <input type="radio" name="pizza_size" value = "small" checked = "checked">
       <span class="checkmark"></span>
     </label>
     <label class="container">Medium
-      <input type="radio" checked="checked" name="pizza_size">
+      <input type="radio" name="pizza_size" value = "medium">
       <span class="checkmark"></span>
     </label>
     <label class="container">Large
-      <input type="radio" checked="checked" name="pizza_size">
+      <input type="radio" name="pizza_size" value = "large">
       <span class="checkmark"></span>
     </label>
 
+    Quantity: 
+    <select id = "pizza_amount">
+      <option value="1">One</option>
+      <option value="2">Two</option>
+      <option value="3">Three</option>
+      <option value="4">Four</option>
+    </select>
+
+    <p></p>
+    <input type="checkbox" name="pizza_topping" value="pepperoni">Pepperoni<br>
+    <input type="checkbox" name="pizza_topping" value="sausage">Sausage<br>
+    <input type="checkbox" name="pizza_topping" value="mushroom">Mushroom<br>
+    <input type="checkbox" name="pizza_topping" value="bacon">Bacon<br>
+    <input type="checkbox" name="pizza_topping" value="olive">Olives<br>
+    
+    <input type="submit" name = "submit_button" onclick = "addPizza()" class="btn" value = "Add to Order">  
+  </div>
+
+  <div class="column" style="background-color:#7dbde8;">
+    <h2>Breadsticks</h2>
+
+    <select>
+    <option value="breadsticks_four">Four</option>
+    <option value="breadsticks_six">Six</option>
+    <option value="breadsticks_eight">Eight</option>
+    <option value="breadsticks_ten">Ten</option>
+    </select>
+
+    <select>
+    <option value="breadsticks_original">Original</option>
+    <option value="breadsticks_cheesy">Cheesy</option>
+    <option value="breadsticks_cheesy_garlic">Cheesy Garlic</option>
+    </select>
 
     <input type="submit" name = "submit_button" class="btn" value = "Add to Order">  
   </div>
-  <div class="column" style="background-color:#7dbde8;">
-    <h2>Breadsticks</h2>
-    <input type="submit" name = "submit_button" class="btn" value = "Add to Order">  
-  </div>
+
   <div class="column" style="background-color:#a8d3f0;">
     <h2>Drinks</h2>
+
+    <label class="container">Small
+      <input type="radio" name="drink_size">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Medium
+      <input type="radio" name="drink_size">
+      <span class="checkmark"></span>
+    </label>
+    <label class="container">Large
+      <input type="radio" name="drink_size">
+      <span class="checkmark"></span>
+    </label>
+
+    <select>
+      <option value="crush">Crush</option>
+      <option value="mountain_dew">Mountain Dew</option>
+      <option value="coke">Coke</option>
+    </select>
+
     <input type="submit" name = "submit_button" class="btn" value = "Add to Order">  
   </div>
   <div class="column" style="background-color:#d4e9f7;">
     <h2>Order</h2>
+
+    <p id="pizza_display"></p>
+    <p id="breadstick_display"></p>
+    <p id="drink_display"></p>
+
     <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
   </div>
 </div>
 
 </body>
+</html>
