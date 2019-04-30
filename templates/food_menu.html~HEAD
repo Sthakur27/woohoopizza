@@ -153,27 +153,26 @@ h3{
     //ID
     this.ID = 0;
     if(t_pepperoni){
-      this.ID += 1;
+      ID += 1;
     }
     if(t_mushroom){
-      this.ID += 2;
+      ID += 2;
     }
     if(t_sausage){
-      this.ID += 4;
+      ID += 4;
     }
     if(t_bacon){
-      this.ID += 8;
+      ID += 8;
     }
     if(t_olive){
-      this.ID += 16;
+      ID += 16;
     }
-    console.log(p_size);
-    if(p_size == "medium"){
-       this.ID += 64;
-     }
-    if(p_size == "large"){
-       this.ID += 128;
-    }
+    // if(p_size == "medium"){
+    //   ID += 64;
+    // }
+    // if(p_size == "large"){
+    //   ID += 128;
+    // }
     // Toppings
     // this.total_toppings = "";
 
@@ -242,7 +241,7 @@ h3{
   }
 
   function addPizza(){
-    var size = document.querySelector("input[name=pizza_size]:checked").value;
+    var size = parseInt(document.querySelector("input[name=pizza_size]:checked").value);
     var amount = parseInt(document.getElementById("pizza_amount").value);
     var toppings = document.querySelectorAll("input[name=pizza_topping]:checked");
     var pepperoni = false;
@@ -270,6 +269,7 @@ h3{
       }
     }
 
+
     var p = new Pizza(amount, pepperoni, mushroom, sausage, bacon, olive, size);
 
     // var pizza_d = ""
@@ -279,22 +279,42 @@ h3{
     // }
 
     // document.getElementByID("pizza_display").innerHTML = pizza_d;
-    alert("Pizza Added");
+    alert("Hello");
   }
 </script>
 
 <script> 
 
-  class drink{
-    constuctor(size, type){
-      this.type = type;
-      this.size = size;
+  function Drink(d_size, d_type, d_amount){
+    this.size = d_size;
+    this.type = d_type;
+    this.amount = d_amount;
+    this.ID = 0;
+    if(type == "crush"){
+      this.ID += 1;
     }
+    if(type == "mountain_dew"){
+      this.ID += 2;
+    }
+    if(type == "coke"){
+      this.ID += 4;
+    }
+    if(size == "small"){
+      this.ID += 8;
+    }
+    if(size == "medium"){
+      this.ID += 16;
+    }
+    if(size == "large"){
+      this.ID += 32;
+    }
+    this.orderText = "";
+    this.orderText = d_amount + " x " + d_size + " " + d_type;
   }
 
   class breadsticks{
-    constructor(amount, type){
-      this.amount = amount;
+    constructor(b_amount, type){
+      this.amount = b_amount;
       this.type = type;
     }
   }
@@ -381,7 +401,14 @@ h3{
       <span class="checkmark"></span>
     </label>
 
-    <select>
+    <select id = "drink_amount">
+      <option value="drink_one">One</option>
+      <option value="drink_two">Two</option>
+      <option value="drink_three">Three</option>
+      <option value="drink_four">Four</option>
+    </select>
+
+    <select id = "drink_type">
       <option value="crush">Crush</option>
       <option value="mountain_dew">Mountain Dew</option>
       <option value="coke">Coke</option>

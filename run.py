@@ -82,38 +82,31 @@ def myhash(password):
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method=='POST':
-        #print(request.form)
         if(request.form['submit_button'] == "Sign Up"):
             email = request.form["email"]
             sql = "select * from User where email='{}';".format(email)
             existing_user = sql_query(sql)
             if(existing_user!=[]):
-                #print("existing user found: {}".format(existing_user))
-				flash("Error adding user, email \"{}\"already in use".format(email),"bg-error")
+                flash("Error adding user, email \"{}\"already in use".format(email),"bg-danger")
             else:
                 password = request.form["password"]
-                #print(password)
                 passwordhash = myhash(password)
-                #print(passwordhash)
                 sql = "insert into User (email,password_hash) values ('{}','{}');".format(email,passwordhash)
                 sql_execute(sql)
-				flash("User \"{}\" added".format(email),"bg-success")
+                flash("User \"{}\" added".format(email),"bg-success")
         else:
             email = request.form["email"]
             passwordhash = myhash(request.form["password"])
             sql = "SELECT password_hash from User where email='{}'".format(email)
-            real_phash = sql_query(sql)[0][0]
-            #print(real_phash)
-            #print(passwordhash)
-            if(passwordhash == real_phash):
-                #print("match")
-				flash("Successfully Logged in","bg-success")
+            real_phash = sql_query(sql)
+            if(real_phash == []):
+                flash("No user \"{}\" found".format(email),"bg-danger")
+            elif(passwordhash == real_phash[0][0]):
+                flash("Successfully Logged in","bg-success")
                 session['logged_in']=True
                 return redirect('/menu')
             else:
-                #print("incorrect password")
-				flash("Incorrect password for \"{}\"".format(email),"bg-error")
-            
+                flash("Incorrect password for \"{}\"".format(email),"bg-danger")
         return redirect('/')
     else:
         return render_template('login.html')
