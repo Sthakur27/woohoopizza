@@ -150,58 +150,68 @@ h3{
     this.olive = t_olive;
     //Size
     this.size = p_size;
-    //ID and Toppings
+    //ID
     this.ID = 0;
-    this.total_toppings = "";
     if(t_pepperoni){
-      this.ID += 1;
-      this.total_toppings += "pepperoni, ";
+      ID += 1;
     }
     if(t_mushroom){
-      this.ID += 2;
-      this.total_toppings += "mushroom, ";
+      ID += 2;
     }
     if(t_sausage){
-      this.ID += 4;
-      this.total_toppings += "sausage, ";
+      ID += 4;
     }
     if(t_bacon){
-      this.ID += 8;
-      this.total_toppings += "bacon, ";
+      ID += 8;
     }
     if(t_olive){
-      this.ID += 16;
-      this.total_toppings += "olive, ";
+      ID += 16;
     }
-    if(!t_pepperoni && !t_sausage && !t_mushroom && !t_bacon && !t_olive){
-      this.total_toppings = "plain";
-    }
-    if(p_size == "small"){
-      this.ID += 32;
-    }
-    if(p_size == "medium"){
-       this.ID += 64;
-     }
-    if(p_size == "large"){
-       this.ID += 128;
-    }
+    // if(p_size == "medium"){
+    //   ID += 64;
+    // }
+    // if(p_size == "large"){
+    //   ID += 128;
+    // }
+    // Toppings
+    // this.total_toppings = "";
 
-    //Puralness
-    this.plural = true;
-    this.pizza_name = "Pizza";
-    if(this.amount == 1){
-      this.plural = false;
-    }
-    if(this.plural){
-      this.pizza_name = "Pizzas";
-    }
-    else{
-      this.pizza_name = "Pizza";
-    }
+    // //Puralness
+    // this.plural = true;
+    // if(this.amount == 1){
+    //   plural = false;
+    // }
+    // if(plural){
+    //   this.pizza_name = "Pizzas"
+    // }
+    // else{
+    //   this.pizza_name = "Pizza"
+    // }
 
-    //Order Text to print
-    this.orderText = this.amount + " x " + this.pizza_size + " " + this.pizza_name + " with " + this.total_toppings;
+    // //Order Text to print
+    // this.orderText = amount.toString() + " x " + size + " " + pizza_name + " with: " + total_toppings;
+  }
 
+  //Helper function for Pizza type
+  Pizza.prototype.calculateTotal_Toppings = function(){
+    // if(pepperoni){
+    //   this.total_toppings += "pepperoni, ";
+    // }
+    // if(sausage){
+    //   this.total_toppings += "sausage, ";
+    // }
+    // if(mushrooms){
+    //   this.total_toppings += "mushrooms, ";
+    // }
+    // if(bacon){
+    //   this.total_toppings += "bacon, ";
+    // }
+    // if(olives){
+    //   this.total_toppings += "olives, ";
+    // }
+    // if(!pepperoni && !sausage && !mushrooms && !bacon && !olives){
+    //   this.total_toppings = "plain";
+    // }
   }
 
   //Getters
@@ -213,29 +223,25 @@ h3{
     return this.amount;
   }
 
-  Pizza.prototype.getOrderText() = function(){
-    return this.orderText;
-  }
-
   Pizza.prototype.incrementOrderAmount(x) = function(x){
     this.amount += x;
   }
 
   Pizza.prototype.checkPizzas = function(){
-    // var exists = false;
-    // for(i = 0; i < pizzas.length; i++){
-    //   if(this.getID() == pizzas[i].getID()){
-    //     pizzas[i].incrementOrderAmount(this.amount);
-    //     exists = true;
-    //   }
-    // }
-    // if(!exists){
-    //   pizzas.push(this);
-    // }
+    var exists = false;
+    for(i = 0; i < pizzas.length; i++){
+      if(this.getID() == pizzas[i].getID()){
+        pizzas[i].incrementOrderAmount(this.getAmount());
+        exists = true;
+      }
+    }
+    if(!exists){
+      pizzas.push(this);
+    }
   }
 
   function addPizza(){
-    var size = document.querySelector("input[name=pizza_size]:checked").value;
+    var size = parseInt(document.querySelector("input[name=pizza_size]:checked").value);
     var amount = parseInt(document.getElementById("pizza_amount").value);
     var toppings = document.querySelectorAll("input[name=pizza_topping]:checked");
     var pepperoni = false;
@@ -263,14 +269,13 @@ h3{
       }
     }
 
-    //Checks and adds pizza
+
     var p = new Pizza(amount, pepperoni, mushroom, sausage, bacon, olive, size);
-    // p.checkPizzas();
 
     // var pizza_d = ""
 
     // for(int i = 0; i < pizzas.length; i++){
-    //   pizza_d += pizzas[i].getOrderText(); 
+    //   pizza_d += pizzas[i].amount() + " x " + pizzas[i].total_toppings() + pizzas[i].size() + " pizzas" + '\n'; 
     // }
 
     // document.getElementByID("pizza_display").innerHTML = pizza_d;
@@ -279,7 +284,6 @@ h3{
 </script>
 
 <script> 
-  var drinks[];
 
   function Drink(d_size, d_type, d_amount){
     this.size = d_size;
@@ -308,35 +312,11 @@ h3{
     this.orderText = d_amount + " x " + d_size + " " + d_type;
   }
 
-
-  //Getters
-  Drink.prototype.getID() = function(){
-    return this.ID;
-  }
-
-  Drink.prototype.getAmount() = function(){
-    return this.amount;
-  }
-
-  Drink.prototype.incrementOrderAmount(x) = function(x){
-    this.amount += x;
-  }
-
-  Drink.prototype.checkDrinks = function(){
-    var exists = false;
-    for(i = 0; i < drinks.length; i++){
-      if(this.getID() == drinkss[i].getID()){
-        drinks[i].incrementOrderAmount(this.getAmount());
-        exists = true;
-      }
+  class breadsticks{
+    constructor(b_amount, type){
+      this.amount = b_amount;
+      this.type = type;
     }
-    if(!exists){
-      drinks.push(this);
-    }
-  }
-
-  function addDrink(){
-
   }
 
 </script>
