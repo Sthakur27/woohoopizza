@@ -359,7 +359,19 @@ h3{
     // document.getElementById("drink_display").innerHTML = drink_d;
     alert("Hello");
   }
-
+  function sendData(){
+    orderData = [];
+    orderData.push(document.getElementById("pizza_display").innerHTML);
+    orderData.push(document.getElementById("drink_display").innerHTML);
+    orderData.push(document.getElementById("breadstick_display").innerHTML);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/menu", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      order: orderData
+    }));
+    console.log("Sent Data");
+}
 </script>
 <body>
 
@@ -464,7 +476,7 @@ h3{
     <p id="breadstick_display"></p>
     <p id="drink_display"></p>
 
-    <input type="submit" name = "submit_button" onclick = "addDrink()" class="btn" value = "Submit Order">  
+    <input type="submit" name = "submit_button" onclick = "sendData()" class="btn" value = "Submit Order">  
   </div>
 </div>
 
