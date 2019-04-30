@@ -45,10 +45,8 @@ create table BreadStick(
 
 create table UserOrder(
     id int not null auto_increment primary key,
-    orderstatus varchar(255) not null,
 	user_id int not null,
 	placed_on datetime,
-	notes varchar(5000),
 	FOREIGN KEY (user_id) REFERENCES User(id)
 );
 
@@ -80,8 +78,8 @@ create table BreadStick_Order(
 
 create table Drink_Order(
     id int not null auto_increment primary key,
-	pizza_id int not null,
 	drink_id int not null,
+	order_id int not null,
 	quantity int not null,
 	FOREIGN KEY (drink_id) REFERENCES Drink(id),
 	FOREIGN KEY (order_id) REFERENCES UserOrder(id)
