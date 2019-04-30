@@ -200,25 +200,27 @@ h3{
     }
 
     //Order Text to print
-    this.orderText = this.amount + " x " + this.pizza_size + " " + this.pizza_name + " with " + this.total_toppings;
+    this.orderText = this.amount + " x " + p_size + " " + this.total_toppings + " " + this.pizza_name;
 
   }
 
   //Getters
-  Pizza.prototype.getID() = function(){
+  Pizza.prototype.getID = function(){
     return this.ID;
   }
 
-  Pizza.prototype.getAmount() = function(){
+  Pizza.prototype.getAmount = function(){
     return this.amount;
   }
 
-  Pizza.prototype.getOrderText() = function(){
+  Pizza.prototype.getOrderText = function(){
     return this.orderText;
   }
 
-  Pizza.prototype.incrementOrderAmount(x) = function(x){
+  Pizza.prototype.incrementOrderAmount = function(x){
     this.amount += x;
+    this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
+
   }
 
   Pizza.prototype.checkPizzas = function(){
@@ -267,65 +269,70 @@ h3{
     var p = new Pizza(amount, pepperoni, mushroom, sausage, bacon, olive, size);
     p.checkPizzas();
 
-    var pizza_d = ""
+    var pizza_d = "";
 
-    for(int i = 0; i < pizzas.length; i++){
-      pizza_d += pizzas[i].getOrderText(); 
+    for(i = 0; i < pizzas.length; i++){
+      pizza_d += pizzas[i].getOrderText() + "\n"; 
     }
 
-    document.getElementByID("pizza_display").innerHTML = pizza_d;
-    alert("Hello");
+    document.getElementById("pizza_display").innerHTML = pizza_d;
   }
-</script>
 
-<script> 
-  var drinks[];
+  var drinks = [];
 
   function Drink(d_size, d_type, d_amount){
     this.size = d_size;
-    this.type = d_type;
+    this.typeText = "";
     this.amount = d_amount;
     this.ID = 0;
-    if(type == "crush"){
+    if(d_type == 1){
       this.ID += 1;
+      this.typeText = "Crush";
     }
-    if(type == "mountain_dew"){
+    if(d_type == 2){
       this.ID += 2;
+      this.typeText = "Mountain Dew";
     }
-    if(type == "coke"){
+    if(d_type == 3){
       this.ID += 4;
+      this.typeText = "Coke";
     }
-    if(size == "small"){
+    if(d_size == "small"){
       this.ID += 8;
     }
-    if(size == "medium"){
+    if(d_size == "medium"){
       this.ID += 16;
     }
-    if(size == "large"){
+    if(d_size == "large"){
       this.ID += 32;
     }
     this.orderText = "";
-    this.orderText = d_amount + " x " + d_size + " " + d_type;
+    this.orderText = d_amount + " x " + d_size + " " + this.typeText + "\n";
   }
 
 
   //Getters
-  Drink.prototype.getID() = function(){
+  Drink.prototype.getID = function(){
     return this.ID;
   }
 
-  Drink.prototype.getAmount() = function(){
+  Drink.prototype.getAmount = function(){
     return this.amount;
   }
 
-  Drink.prototype.incrementOrderAmount(x) = function(x){
+  Drink.prototype.getOrderText = function(){
+    return this.orderText;
+  }
+
+  Drink.prototype.incrementOrderAmount = function(x){
     this.amount += x;
+    this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
   }
 
   Drink.prototype.checkDrinks = function(){
     var exists = false;
     for(i = 0; i < drinks.length; i++){
-      if(this.getID() == drinkss[i].getID()){
+      if(this.getID() == drinks[i].getID()){
         drinks[i].incrementOrderAmount(this.getAmount());
         exists = true;
       }
@@ -336,9 +343,95 @@ h3{
   }
 
   function addDrink(){
+    var size = document.querySelector("input[name=drink_size]:checked").value;
+    var amount = parseInt(document.getElementById("drink_amount").value);
+    var type = parseInt(document.getElementById("drink_type").value);
 
+    var d = new Drink(size, type, amount);
+    d.checkDrinks();
+
+    var drink_d = "";
+
+    for(i = 0; i < drinks.length; i++){
+      drink_d += drinks[i].getOrderText(); 
+    }
+
+    document.getElementById("drink_display").innerHTML = drink_d;
   }
 
+
+  var breadsticks = [];
+
+  function Breadstick(b_amount, b_type){
+    this.amount = b_amount;
+    this.type = b_type;
+    this.orderText = this.amount + " x " + b_type;
+  }
+
+  Breadstick.prototype.getType = function(){
+    return this.type;
+  }
+
+  Breadstick.prototype.getAmount = function(){
+    return this.amount;
+  }
+
+  Breadstick.prototype.getOrderText = function(){
+    return this.orderText;
+  }
+
+  Breadstick.prototype.incrementOrderAmount = function(x){
+    this.amount += x;
+    this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
+  }
+
+  Breadstick.prototype.checkBreadsticks = function(){
+    var exists = false;
+    for(i = 0; i < breadsticks.length; i++){
+      if(this.getType() == breadsticks[i].getType()){
+        breadsticks[i].incrementOrderAmount(this.getAmount());
+        exists = true;
+      }
+    }
+    if(!exists){
+      breadsticks.push(this);
+    }
+  }
+
+  function addBreadstick(){
+    var amount = parseInt(document.getElementById("breadstick_amount").value);
+    var type = document.getElementById("breadstick_type").value;
+
+    var b = new Breadstick(amount, type);
+    b.checkBreadsticks();
+
+
+
+    var breadstick_d = "";
+
+    for(i = 0; i < breadsticks.length; i++){
+      breadstick_d += breadsticks[i].getOrderText(); 
+    }
+
+    document.getElementById("breadstick_display").innerHTML = breadstick_d;
+<<<<<<< HEAD
+=======
+
+>>>>>>> f08596a5bbc65866d3d7ba2f59156f77146605a0
+  }
+  function sendData(){
+    orderData = [];
+    orderData.push(pizzas);
+    orderData.push(breadsticks);
+    orderData.push(drinks);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/menu", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      orderData
+    }));
+    console.log("Sent Data");
+  }
 </script>
 <body>
 
@@ -389,61 +482,60 @@ h3{
   <div class="column" style="background-color:#7dbde8;">
     <h2>Breadsticks</h2>
 
-    <select>
-    <option value="breadsticks_four">Four</option>
-    <option value="breadsticks_six">Six</option>
-    <option value="breadsticks_eight">Eight</option>
-    <option value="breadsticks_ten">Ten</option>
+    <select id = "breadstick_amount">
+    <option value="4">Four</option>
+    <option value="6">Six</option>
+    <option value="8">Eight</option>
+    <option value="10">Ten</option>
     </select>
 
-    <select>
+    <select id = "breadstick_type">
     <option value="breadsticks_original">Original</option>
     <option value="breadsticks_cheesy">Cheesy</option>
     <option value="breadsticks_cheesy_garlic">Cheesy Garlic</option>
     </select>
 
-    <input type="submit" name = "submit_button" class="btn" value = "Add to Order">  
+    <input type="submit" name = "submit_button" onclick = "addBreadstick()" class="btn" value = "Add to Order">  
   </div>
 
   <div class="column" style="background-color:#a8d3f0;">
     <h2>Drinks</h2>
 
     <label class="container">Small
-      <input type="radio" name="drink_size">
+      <input type="radio" name="drink_size" value = "small" checked = checked>
       <span class="checkmark"></span>
     </label>
     <label class="container">Medium
-      <input type="radio" name="drink_size">
+      <input type="radio" value = "medium" name="drink_size">
       <span class="checkmark"></span>
     </label>
     <label class="container">Large
-      <input type="radio" name="drink_size">
+      <input type="radio" value = "large" name="drink_size">
       <span class="checkmark"></span>
     </label>
 
     <select id = "drink_amount">
-      <option value="drink_one">One</option>
-      <option value="drink_two">Two</option>
-      <option value="drink_three">Three</option>
-      <option value="drink_four">Four</option>
+      <option value="1">One</option>
+      <option value="2">Two</option>
+      <option value="3">Three</option>
+      <option value="4">Four</option>
     </select>
 
     <select id = "drink_type">
-      <option value="crush">Crush</option>
-      <option value="mountain_dew">Mountain Dew</option>
-      <option value="coke">Coke</option>
+      <option value="1">Crush</option>
+      <option value="2">Mountain Dew</option>
+      <option value="3">Coke</option>
     </select>
 
-    <input type="submit" name = "submit_button" class="btn" value = "Add to Order">  
+    <input type="submit" name = "submit_button" onclick = "addDrink()" class="btn" value = "Add to Order">  
   </div>
   <div class="column" style="background-color:#d4e9f7;">
     <h2>Order</h2>
 
     <p id="pizza_display"></p>
     <p id="breadstick_display"></p>
-    <p id="drink_display"></p>
-
-    <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
+    <p id="drink_display"></p>  
+    <input type="submit" name = "submit_button" onclick = "sendData()" class="btn" value = "Submit Order">  
   </div>
 </div>
 
