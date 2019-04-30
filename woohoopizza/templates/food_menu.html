@@ -200,27 +200,25 @@ h3{
     }
 
     //Order Text to print
-    this.orderText = this.amount + " x " + p_size + " " + this.total_toppings + " " + this.pizza_name;
+    this.orderText = this.amount + " x " + this.pizza_size + " " + this.pizza_name + " with " + this.total_toppings;
 
   }
 
   //Getters
-  Pizza.prototype.getID = function(){
+  Pizza.prototype.getID() = function(){
     return this.ID;
   }
 
-  Pizza.prototype.getAmount = function(){
+  Pizza.prototype.getAmount() = function(){
     return this.amount;
   }
 
-  Pizza.prototype.getOrderText = function(){
+  Pizza.prototype.getOrderText() = function(){
     return this.orderText;
   }
 
-  Pizza.prototype.incrementOrderAmount = function(x){
+  Pizza.prototype.incrementOrderAmount(x) = function(x){
     this.amount += x;
-    this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
-
   }
 
   Pizza.prototype.checkPizzas = function(){
@@ -269,19 +267,19 @@ h3{
     var p = new Pizza(amount, pepperoni, mushroom, sausage, bacon, olive, size);
     p.checkPizzas();
 
-    var pizza_d = "";
+    var pizza_d = ""
 
-    for(i = 0; i < pizzas.length; i++){
+    for(int i = 0; i < pizzas.length; i++){
       pizza_d += pizzas[i].getOrderText(); 
     }
 
-    document.getElementById("pizza_display").innerHTML = pizza_d;
+    document.getElementByID("pizza_display").innerHTML = pizza_d;
     alert("Hello");
   }
 </script>
 
 <script> 
-  var drinks = [];
+  var drinks[];
 
   function Drink(d_size, d_type, d_amount){
     this.size = d_size;
@@ -312,21 +310,16 @@ h3{
 
 
   //Getters
-  Drink.prototype.getID = function(){
+  Drink.prototype.getID() = function(){
     return this.ID;
   }
 
-  Drink.prototype.getAmount = function(){
+  Drink.prototype.getAmount() = function(){
     return this.amount;
   }
 
-  Drink.prototype.getOrderText = function(){
-    return this.orderText;
-  }
-
-  Drink.prototype.incrementOrderAmount = function(x){
+  Drink.prototype.incrementOrderAmount(x) = function(x){
     this.amount += x;
-    this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
   }
 
   Drink.prototype.checkDrinks = function(){
@@ -343,21 +336,7 @@ h3{
   }
 
   function addDrink(){
-    // var size = document.querySelector("input[name=drink_size]:checked").value;
-    // var amount = parseInt(document.getElementById("drink_amount").value);
-    // var type = document.querySelector("input[name=drink_type]:checked").value;
 
-    // var d = new Drink(size, type, amount);
-    // d.checkDrinks();
-
-    // var drink_d = "";
-
-    // for(i = 0; i < drinks.length; i++){
-    //   drink_d += drinks[i].getOrderText(); 
-    // }
-
-    // document.getElementById("drink_display").innerHTML = drink_d;
-    alert("Hello");
   }
 
 </script>
@@ -430,7 +409,7 @@ h3{
     <h2>Drinks</h2>
 
     <label class="container">Small
-      <input type="radio" name="drink_size" checked = checked>
+      <input type="radio" name="drink_size">
       <span class="checkmark"></span>
     </label>
     <label class="container">Medium
@@ -464,7 +443,7 @@ h3{
     <p id="breadstick_display"></p>
     <p id="drink_display"></p>
 
-    <input type="submit" name = "submit_button" onclick = "addDrink()" class="btn" value = "Submit Order">  
+    <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
   </div>
 </div>
 
