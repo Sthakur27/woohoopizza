@@ -4,7 +4,8 @@ import hashlib
 import random
 import mysql.connector
 from flask_bootstrap import Bootstrap
-
+import json
+import time
 
 # Read configuration from file.
 config = configparser.ConfigParser()
@@ -26,15 +27,19 @@ def sql_query(sql):
     db.close()
     return result
 
-def sql_execute(sql):
+def sql_execute(sql, returnId = False):
     print("ATTEMPTING EXECUTE:")
     print(sql)
     db = mysql.connector.connect(**config['mysql.connector'])
     cursor = db.cursor()
     cursor.execute(sql)
+    if(returnId):
+        newId = cursor.lastrowid
     db.commit()
     cursor.close()
     db.close()
+    if(returnId):
+        return newId
 
 def login_redirect():
     if not is_logged_in():
@@ -80,7 +85,7 @@ def login():
             #sign in existing user
             email = request.form["email"]
             passwordhash = myhash(request.form["password"])
-            sql = "SELECT password_hash from User where email='{}'".format(email)
+            sql = "SELECT password_hash,id from User where email='{}'".format(email)
             real_phash = sql_query(sql)
             if(real_phash == []):
                 flash("No user \"{}\" found".format(email),"bg-danger")
@@ -88,6 +93,7 @@ def login():
                 flash("Successfully Logged in","bg-success")
                 session['logged_in'] = True
                 session['username'] = email
+                session['uid'] = real_phash[0][1]
                 return redirect('/menu')
             else:
                 flash("Incorrect password for \"{}\"".format(email),"bg-danger")
@@ -100,15 +106,44 @@ def login():
 def home():
     login_redirect() #ensure user logged in
     if request.method=='POST':
-        #insert order
-        #get id of inserted row
-        sql = "SELECT id from UserOrder where id = LAST_INSERT_ID()"
-        order_id = sql_execute(sql)
-        if(order_id!=[] and order_id[0]!=[]):
-            order_id=[0][0]
-            return redirect("/order/confirm/{}".format(order_id))
-        else:
-            flash("Error retrieving order","bg-danger")
+        print("INCOMING ORDER:")
+        data = json.loads(request.data.decode('ascii'))
+        #print(data)
+        #redirect('/')
+        pizzas = data[0]
+        breadsticks = data[1]
+        drinks = data[2]
+        #print(pizzas)
+        #print(breadsticks)
+        #print(drinks)
+        
+        #create user order
+        sql = "INSERT INTO UserOrder (user_id,placed_on) values ({},'{}');".format(session['uid'],time.strftime('%Y-%m-%d %H-%M-%S'))
+        order_id = sql_execute(sql,returnId=True) #get id of row inserted
+        print(order_id)
+        psizes = {"small":1,"medium":2,"large":3}
+        toppings = {'pepperoni':5,'mushroom':6,"olive":7,"bacon":8,'sausage':9}
+        for p in pizzas:
+            sql = "INSERT into Pizza_Order (pizza_id,order_id,quantity) values ({},{},{});".format(psizes[p['size']]+1,order_id,p['amount'])
+            last_pizza_id = sql_execute(sql,returnId=True)
+            for t in toppings:
+                if(p[t]): #pizza has topping
+                    sql = "INSERT into Pizza_Topping (pizza_order_id,topping_id) values ({},{});".format(last_pizza_id,toppings[t])
+                    #print(sql)
+                    sql_execute(sql)
+        btypes = {"breadsticks_original":13,"breadsticks_cheesy":14,"breadsticks_cheesy_garlic":15}            
+        for b in breadsticks:
+            sql = "INSERT into BreadStick_Order (breadstick_id,order_id,quantity) values ({},{},{});".format(btypes[b['type']],order_id,b['amount'])
+            #print(sql)
+            sql_execute(sql) 
+        dsizes = {'small':0,'medium':1,'large':2}
+        dtypes = {"Crush":13,"Mountain Dew":16,"Coke":10}
+        for d in drinks:
+            sql = "INSERT into Drink_Order (drink_id,order_id,quantity) values ({},{},{});".format(dtypes[d['typeText']]+dsizes[d['size']],order_id,d['amount'])
+            #print(sql)
+            sql_execute(sql)
+        #return redirect("/order/confirm/{}".format(order_id))
+        
         
     return render_template('food_menu.html',username = session['username'])
 
@@ -117,27 +152,28 @@ def order_analysis(order_id):
     sql = "SELECT po.id,po.quantity,p.pizza_size, SUM(po.quantity*fbd.base_price),SUM(po.quantity*fbd.base_calories)"
     sql += " from Pizza p,Pizza_Order po, FoodBaseData fbd where po.order_id={} and p.id=po.pizza_id and fbd.id = p.base_data_id".format(order_id)
     sql += " group by po.id;"
-    pizza_orders = sql_execute(sql)
+    pizza_orders = sql_query(sql)
     #append toppings
     for i in range(len(pizza_orders)):
         sql = "SELECT t.name, SUM({}*fbd.base_price),SUM({}*fbd.base_calories)".format(pizza_orders[i][1],pizza_orders[i][1])
         sql += " from Topping t,Pizza_Topping pt, FoodBaseData fbd"
-        sql += " where Pizza_Topping.pizza_order_id={} and Pizza_Topping.topping_id=Topping.id".format(pizza_orders[i][0])
+        sql += " where pt.pizza_order_id={} and pt.topping_id=t.id and t.base_data_id=fbd.id".format(pizza_orders[i][0])
         sql += " group by t.name;"
-        toppings = sql_execute(sql)
+        toppings = sql_query(sql)
+        pizza_orders[i] = list(pizza_orders[i])
         pizza_orders[i].append(toppings)
     
     #get drinks
-    sql = "SELECT do.id,do.quantity,d.name, SUM(po.quantity*fbd.base_price),SUM(po.quantity*fbd.base_calories)"
+    sql = "SELECT do.id,do.quantity,d.name, SUM(do.quantity*fbd.base_price),SUM(do.quantity*fbd.base_calories)"
     sql += " from Drink d,Drink_Order do, FoodBaseData fbd where do.order_id={} and d.id=do.drink_id and fbd.id = d.base_data_id".format(order_id)
     sql += " group by do.id;"
-    drink_orders = sql_execute(sql) 
+    drink_orders = sql_query(sql) 
     
     #get breadsticks
     sql = "SELECT bo.id,bo.quantity,b.name, SUM(bo.quantity*fbd.base_price),SUM(bo.quantity*fbd.base_calories)"
     sql += " from BreadStick b,BreadStick_Order bo, FoodBaseData fbd where bo.order_id={} and b.id=bo.breadstick_id and fbd.id = b.base_data_id".format(order_id)
     sql += " group by bo.id;"
-    breadstick_orders = sql_execute(sql)
+    breadstick_orders = sql_query(sql)
     
     total_price = 0
     total_calories = 0
@@ -157,6 +193,42 @@ def order_analysis(order_id):
         total_calories += bo[4]
         
     return ([total_price,total_calories,pizza_orders,drink_orders,breadstick_orders])
+
+@app.route("/refresh")
+def ref():
+    for t in ['Pizza_Topping','BreadStick_Order','Drink_Order','Pizza_Order','UserOrder']:
+        sql = "DELETE from {};".format(t)
+        sql_execute(sql)
+    return redirect("/")
+    
+@app.route("/query")
+def qme():
+    #sql_execute(sql)
+    sql = "SELECT * from Drink;"
+    ds = sql_query(sql)
+    for d in ds:
+        print(d)
+    sql = "SELECT * from BreadStick;"
+    ds = sql_query(sql)
+    for d in ds:
+        print(d)
+    sql = "SELECT * from Pizza;"
+    ds = sql_query(sql)
+    for d in ds:
+        print(d)
+    sql = "SELECT * from Topping;"
+    ds = sql_query(sql)
+    for d in ds:
+        print(d)
+    sql = "SELECT * from FoodBaseData;"
+    ds = sql_query(sql)
+    for d in ds:
+        print(d)
+    sql = "SELECT * from UserOrder;"
+    ds = sql_query(sql)
+    for d in ds:
+        print(d)
+    return redirect("/")
     
 @app.route('/order/confirm/<int:order_id>', methods=['GET', 'POST'])
 def order_confirm(order_id):
