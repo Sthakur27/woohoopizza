@@ -200,7 +200,7 @@ h3{
     }
 
     //Order Text to print
-    this.orderText = this.amount + " x " + this.pizza_size + " " + this.pizza_name + " with " + this.total_toppings;
+    this.orderText = this.amount + " x " + this.size + " " + this.pizza_name + " with " + this.total_toppings;
 
   }
 
@@ -219,6 +219,8 @@ h3{
 
   Pizza.prototype.incrementOrderAmount = function(x){
     this.amount += x;
+    this.orderText = this.amount + " x " + this.pizza_size + " " + this.pizza_name + " with " + this.total_toppings;
+
   }
 
   Pizza.prototype.checkPizzas = function(){
