@@ -1,5 +1,7 @@
 import configparser
 from flask import Flask, render_template, request, redirect, session 
+import hashlib
+import random
 import mysql.connector
 
 # Read configuration from file.
@@ -11,6 +13,8 @@ app = Flask(__name__)
 
 # Create a function for fetching data from the database.
 def sql_query(sql):
+    print("ATTEMPTING QUERY:")
+    print(sql)
     db = mysql.connector.connect(**config['mysql.connector'])
     cursor = db.cursor()
     cursor.execute(sql)
@@ -20,6 +24,8 @@ def sql_query(sql):
     return result
 
 def sql_execute(sql):
+    print("ATTEMPTING EXECUTE:")
+    print(sql)
     db = mysql.connector.connect(**config['mysql.connector'])
     cursor = db.cursor()
     cursor.execute(sql)
@@ -56,33 +62,51 @@ def newuser():
         #return page for creating user
         return render_template('createuser.html')
 
+def myhash(password):
+    '''
+    algo = 'sha256'
+    hsh = get_hexdigest(algo,"",password)
+    return hsh;
+    '''
+    hasher = hashlib.sha256()
+    bpass = password.encode('ascii')
+    hasher.update(bpass)
+    bhash = hasher.hexdigest()
+    #return bhash.decode('unicode_escape')
+    return bhash
+
 
 @app.route('/login',methods=['GET','POST'])
 def login():
     if request.method=='POST':
-		submit_button
-        if(request.form['submit_button'] == "Sign In"):
+        print(request.form)
+        if(request.form['submit_button'] == "Sign Up"):
             email = request.form["email"]
-            sql = "select * from User where email = {};".format(email)
+            sql = "select * from User where email='{}';".format(email)
             existing_user = sql_query(sql)
-            print("existing user: {}".format(existing_user))
-            passwordhash = hash(request.form["password"])
-            sql = "insert into User values ({},{},{});".format(email,passwordhash,"phonenumber")
-            sql_execute(sql)			
-		else:
+            if(existing_user!=[]):
+                print("existing user found: {}".format(existing_user))
+            else:
+                password = request.form["password"]
+                print(password)
+                passwordhash = myhash(password)
+                print(passwordhash)
+                sql = "insert into User (email,password_hash) values ('{}','{}');".format(email,passwordhash)
+                sql_execute(sql)
+        else:
             email = request.form["email"]
-            passwordhash = hash(request.form["password"])
-            sql = "select password from User where email = {};".format(email)
-            real_phash = sql_query(sql)
+            passwordhash = myhash(request.form["password"])
+            sql = "SELECT password_hash from User where email='{}'".format(email)
+            real_phash = sql_query(sql)[0][0]
             print(real_phash)
-        #todo, try to login user, redirect if successful, error msg if bad creds
-        #if "email" in request.form:
-            #print(request.form)
-			#print(request.form["email"])
-            #print(request.form["password"])
-            #book_id = int(request.form["buy-book"])
-            #sql = "delete from book where id={book_id}".format(book_id=book_id)
-            #sql_execute(sql)
+            print(passwordhash)
+            if(passwordhash == real_phash):
+                print("match")
+                session['logged_in']=True
+                return redirect('/menu')
+            else:
+                print("incorrect password")
+            
         return redirect('/')
     else:
         return render_template('login.html')
@@ -95,6 +119,7 @@ def home():
 @app.route('/menu', methods=['GET', 'POST'])
 def menu():
     login_redirect() #ensure user logged in
+    print("at menu")
     return render_template('home.html')
 
 @app.route('/order/<int:order_id>', methods=['GET', 'POST'])
@@ -108,5 +133,6 @@ def order_history(user_id):
     return render_template('userhistory.html')
 
 if __name__ == '__main__':
+    app.secret_key = 't13rulzlol'
     app.run(**config['app'])
 
