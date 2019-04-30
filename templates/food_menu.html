@@ -363,6 +363,79 @@ h3{
     alert(type);
   }
 
+  function sendData(){
+    orderData = [];
+    orderData.push(document.getElementById("pizza_display").innerHTML);
+    orderData.push(document.getElementById("drink_display").innerHTML);
+    orderData.push(document.getElementById("breadstick_display").innerHTML);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/menu", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({
+      order: orderData
+    }));
+    console.log("Sent Data");
+}
+</script>
+
+<script>
+  var breadsticks = [];
+
+  function Breadstick(b_amount, b_type){
+    this.amount = b_amount;
+    this.type = b_type;
+    this.orderText = this.amount + " x " + b_type;
+  }
+
+  Breadstick.prototype.getType = function(){
+    return this.type;
+  }
+
+  Breadstick.prototype.getAmount = function(){
+    return this.amount;
+  }
+
+  Breadstick.prototype.getOrderText = function(){
+    return this.orderText;
+  }
+
+  Breadstick.prototype.incrementOrderAmount = function(x){
+    this.amount += x;
+    this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
+  }
+
+  Breadstick.prototype.checkBreadsticks = function(){
+    var exists = false;
+    for(i = 0; i < breadsticks.length; i++){
+      if(this.getType() == breadsticks[i].getType()){
+        breadsticks[i].incrementOrderAmount(this.getAmount());
+        exists = true;
+      }
+    }
+    if(!exists){
+      breadsticks.push(this);
+    }
+  }
+
+  function addBreadstick(){
+    var amount = parseInt(document.getElementById("breadstick_amount").value);
+    var type = document.getElementById("breadstick_type").value;
+
+    var b = new Breadstick(amount, type);
+    b.checkBreadsticks();
+
+
+
+    var breadstick_d = "";
+
+    for(i = 0; i < breadsticks.length; i++){
+      breadstick_d += breadsticks[i].getOrderText(); 
+    }
+
+    document.getElementById("breadstick_display").innerHTML = breadstick_d;
+    alert(amount);
+
+  }
 </script>
 <body>
 
@@ -413,20 +486,20 @@ h3{
   <div class="column" style="background-color:#7dbde8;">
     <h2>Breadsticks</h2>
 
-    <select>
-    <option value="breadsticks_four">Four</option>
-    <option value="breadsticks_six">Six</option>
-    <option value="breadsticks_eight">Eight</option>
-    <option value="breadsticks_ten">Ten</option>
+    <select id = "breadstick_amount">
+    <option value="4">Four</option>
+    <option value="6">Six</option>
+    <option value="8">Eight</option>
+    <option value="10">Ten</option>
     </select>
 
-    <select>
+    <select id = "breadstick_type">
     <option value="breadsticks_original">Original</option>
     <option value="breadsticks_cheesy">Cheesy</option>
     <option value="breadsticks_cheesy_garlic">Cheesy Garlic</option>
     </select>
 
-    <input type="submit" name = "submit_button" class="btn" value = "Add to Order">  
+    <input type="submit" name = "submit_button" onclick = "addBreadstick()" class="btn" value = "Add to Order">  
   </div>
 
   <div class="column" style="background-color:#a8d3f0;">
@@ -467,7 +540,11 @@ h3{
     <p id="breadstick_display"></p>
     <p id="drink_display"></p>
 
+<<<<<<< HEAD
     <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
+=======
+    <input type="submit" name = "submit_button" onclick = "sendData()" class="btn" value = "Submit Order">  
+>>>>>>> 3f10c139f3f53c3de50419947cdb077a2af2775e
   </div>
 </div>
 
