@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block page_content %}
 <html>
 <head>
 <style>
@@ -152,8 +154,17 @@ h3{
   <div class="column" style="background-color:#3498db;">
 
     <h2>Item</h2>
+    {% for pizza in order_info[2] %}
+      <div><p>{{post[1]} x {post[2]} Pizza with: {{post[3]}}}</p></div>
+    {% end for %}
     <h2>Total Calories</h2>
+    {% for calories in order_info[1] %}
+      <div><p>{{calories} Calories}</p></div>
+    {% end for %}
     <h2>Total Price</h2>
+    {% for price in order_info[0] %}
+      <div><p>{{price} $}</p></div>
+    {% end for %}
 
     <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
   </div>
@@ -161,3 +172,4 @@ h3{
 
 </body>
 </html>
+{% endblock %}
