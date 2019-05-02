@@ -7,6 +7,11 @@
   box-sizing: border-box;
 }
 
+a { 
+  color: white;
+  text-decoration: none;
+}
+
 div{
   padding: 10px 0px 0px;
 }
@@ -33,7 +38,7 @@ h3{
 .column {
   float: left;
   width: 100%;
-  height: 500px;
+  height: 600px;
 }
 
 .row:after {
@@ -143,7 +148,7 @@ h3{
 </script>
 <body>
 
-<h1>Order Summary</h1>
+<h2>Order Summary</h2>
 
 <div class = "rightcorner">
   <h2><a href = "/logout">Logout</a></h2>
@@ -153,28 +158,25 @@ h3{
   <h2><a href = "/user/history">{{session.username}}</a></h2>
 </div>
 
-<div class="row">
-  <div class="column" style="background-color:#3498db;">
+<div class="column" style="background-color:#52a7e0;">
+  <h2>Item</h2>
+  {% for pizza in order_info[2] %}
+    <div><p><h3>{{pizza[1]}} x {{pizza[2]}} Pizza with: {{pizza[3]}}</h3></p></div>
+  {% endfor %}
+  {% for drink in order_info[3] %}
+    <div><p><h3>{{drink[1]}} x {{drink[2]}}</h3></p></div>
+  {% endfor %}
+  {% for breadstick in order_info[4] %}
+    <div><p><h3>{{breadstick[1]}} x {{breadstick[2]}}</h3></p></div>
+  {% endfor %}
+  <h2>Total Calories</h2>
+    <div><p><h3>{{order_info[1]}}  Calories</h3></p></div>
+  <h2>Total Price</h2>
+    <div><p><h3>${{order_info[0]}}</h3></p></div>
 
-    <h2>Item</h2>
-    {% for pizza in order_info[2] %}
-      <div><p>{{pizza[1]}} x {{pizza[2]}} Pizza with: {{pizza[3]}}</p></div>
-    {% endfor %}
-    {% for drink in order_info[3] %}
-      <div><p>{{drink[1]}} x {{drink[2]}}</p></div>
-    {% endfor %}
-    {% for breadstick in order_info[4] %}
-      <div><p>{{breadstick[1]}} x {{breadstick[2]}}</p></div>
-    {% endfor %}
-    <h2>Total Calories</h2>
-      <div><p>{{order_info[1]}}  Calories</p></div>
-    <h2>Total Price</h2>
-      <div><p>${{order_info[0]}}</p></div>
+  <input type="submit" name = "submit_button" class="btn" value = "Submit Order">   
+  <input type="submit" name = "submit_button" onclick = "redirect()" class="btn" value = "Return to Menu"> 
 
-    <input type="submit" name = "submit_button" class="btn" value = "Submit Order">   
-    <input type="submit" name = "submit_button" onclick = "redirect()" class="btn" value = "Return to Menu"> 
-
-  </div>
 </div>
 
 </body>
