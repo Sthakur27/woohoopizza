@@ -106,7 +106,7 @@ def login():
 def home():
     login_redirect() #ensure user logged in
     if request.method=='POST':
-        print("INCOMING ORDER:")
+        #print("INCOMING ORDER:")
         data = json.loads(request.data.decode('ascii'))
         #print(data)
         #redirect('/')
@@ -120,7 +120,7 @@ def home():
         #create user order
         sql = "INSERT INTO UserOrder (user_id,placed_on) values ({},'{}');".format(session['uid'],time.strftime('%Y-%m-%d %H-%M-%S'))
         order_id = sql_execute(sql,returnId=True) #get id of row inserted
-        print(order_id)
+        #print(order_id)
         psizes = {"small":1,"medium":2,"large":3}
         toppings = {'pepperoni':5,'mushroom':6,"olive":7,"bacon":8,'sausage':9}
         for p in pizzas:
