@@ -152,6 +152,11 @@ tr:nth-child(even) {
 }
 </style>
 </head>
+<script>
+  function redirect(){
+    window.location.href = "food_menu.html";
+  }
+</script>
 <body>
 
 <h1>Order History for {{username}}</h1>
@@ -177,6 +182,7 @@ tr:nth-child(even) {
 </TR>
 {% endfor %}
 </table>
+<input type = "submit" name = "menu_return" onclick = "redirect()" class = "btn" value = "Return to Menu">
 </body>
 </html>
 {% endblock %}

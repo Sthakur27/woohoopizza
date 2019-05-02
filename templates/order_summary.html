@@ -137,6 +137,9 @@ h3{
 </head>
 
 <script>
+  function redirect(){
+    window.location.href = "food_menu.html";
+  }
 </script>
 <body>
 
@@ -168,7 +171,9 @@ h3{
     <h2>Total Price</h2>
       <div><p>${{order_info[0]}}</p></div>
 
-    <input type="submit" name = "submit_button" class="btn" value = "Submit Order">  
+    <input type="submit" name = "submit_button" class="btn" value = "Submit Order">   
+    <input type="submit" name = "submit_button" onclick = "redirect()" class="btn" value = "Return to Menu"> 
+
   </div>
 </div>
 
