@@ -17,8 +17,6 @@ bootstrap = Bootstrap(app)
 
 # Create a function for fetching data from the database.
 def sql_query(sql):
-    print("ATTEMPTING QUERY:")
-    print(sql)
     db = mysql.connector.connect(**config['mysql.connector'])
     cursor = db.cursor()
     cursor.execute(sql)
@@ -28,8 +26,6 @@ def sql_query(sql):
     return result
 
 def sql_execute(sql, returnId = False):
-    print("ATTEMPTING EXECUTE:")
-    print(sql)
     db = mysql.connector.connect(**config['mysql.connector'])
     cursor = db.cursor()
     cursor.execute(sql)
@@ -42,7 +38,8 @@ def sql_execute(sql, returnId = False):
         return newId
 
 def login_redirect():
-    if not is_logged_in():
+    logged_in = is_logged_in()
+    if not logged_in:
         redirect('/login')
 
 @app.route('/logout',methods=['GET'])
@@ -51,7 +48,10 @@ def logout():
     return redirect('/login')
 
 def is_logged_in():
-    if not session.get('logged_in'):
+    print(session.get('username') is None)
+    if(session.get('username') is None):
+        return False
+    if (not session.get('logged_in')) or (not session.get('username')) or session.get('username') is None:
         return False
     else:
         return session['logged_in']
@@ -143,9 +143,7 @@ def home():
             #print(sql)
             sql_execute(sql)
         flash("Order added successfully","bg-success")
-        #return redirect("/order/confirm/{}".format(order_id))
-        
-        
+        #return redirect("/order/confirm/{}".format(order_id))       
     return render_template('food_menu.html',username = session['username'])
 
 def order_analysis(order_id):
@@ -269,6 +267,21 @@ def order_history():
     sql = "SELECT uo.id, uo.placed_on from UserOrder uo, User u where u.email=\"{}\" and uo.user_id = u.id".format(session['username'])
     orders = sql_query(sql)
     return render_template('orderhistory.html',orders = orders, username = session['username'])
+    
+@app.route('/order/delete/<int:order_id>', methods=['GET', 'POST'])
+def order_delete(order_id):
+    login_redirect() #ensure user logged in
+    sql = "DELETE from Pizza_Topping WHERE Pizza_Topping.pizza_order_id in (SELECT id from Pizza_Order where Pizza_Order.order_id={})".format(order_id)
+    sql_execute(sql)   
+    sql = "DELETE from Pizza_Order WHERE Pizza_Order.order_id={}".format(order_id)
+    sql_execute(sql)
+    sql = "DELETE from BreadStick_Order WHERE BreadStick_Order.order_id={}".format(order_id)
+    sql_execute(sql)
+    sql = "DELETE from Drink_Order WHERE Drink_Order.order_id={}".format(order_id)
+    sql_execute(sql)
+    sql = "DELETE from UserOrder WHERE UserOrder.id={}".format(order_id)
+    sql_execute(sql)
+    return redirect('/user/history/')
 
 if __name__ == '__main__':
     app.secret_key = 't13rulzlol'
