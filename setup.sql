@@ -120,9 +120,9 @@ insert into Drink values (12,12,'L Coke');
 insert into Drink values (12,12,'L Mountain Dew');
 insert into Drink values (12,12,'L Crush');
 
-insert into FoodBaseData values (13,660,5.35);
-insert into FoodBaseData values (14,780,6.70);
-insert into FoodBaseData values (15,750,6.90);
+insert into FoodBaseData values (13,160,1.05);
+insert into FoodBaseData values (14,180,1.20);
+insert into FoodBaseData values (15,190,1.30);
 insert into BreadStick values (13,13,'Original Sticks');
 insert into BreadStick values (14,14,'Cheesy Sticks');
-insert into BreadStick values (15,14,'Cheesy Garlic Sticks');
+insert into BreadStick values (15,15,'Cheesy Garlic Sticks');

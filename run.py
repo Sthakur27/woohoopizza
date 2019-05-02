@@ -37,12 +37,6 @@ def sql_execute(sql, returnId = False):
     if(returnId):
         return newId
 
-# Redirect to login page function
-def login_redirect():
-    logged_in = is_logged_in()
-    if not logged_in:
-        redirect('/login')
-
 # Logout redirects to login page
 @app.route('/logout',methods=['GET'])
 def logout():
@@ -110,14 +104,14 @@ def login():
                 return redirect('/login')
         return redirect('/login')
     else:
-        return redirect('/login')
+        return render_template('login.html')
 
 # The main menu page
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/menu', methods=['GET', 'POST'])
-def home():
-    login_redirect() #ensure user logged in
-
+def menu():
+    if not is_logged_in(): #ensure user logged in
+        return redirect('/login')
     # Load in the POST request data containing order
     if request.method=='POST':
         data = json.loads(request.data.decode('ascii'))
@@ -130,7 +124,7 @@ def home():
         order_id = sql_execute(sql,returnId=True) #get id of row inserted
 
         # Generating the SQL pizza order to send to backend
-        psizes = {"small":1,"medium":2,"large":3}
+        psizes = {"Small":1,"Medium":2,"Large":3}
         toppings = {'pepperoni':5,'mushroom':6,"olive":7,"bacon":8,'sausage':9}
         for p in pizzas:
             sql = "INSERT into Pizza_Order (pizza_id,order_id,quantity) values ({},{},{});".format(psizes[p['size']]+1,order_id,p['amount'])
@@ -141,13 +135,14 @@ def home():
                     sql_execute(sql)
 
         # Generating the SQL breadstick order to send to backend
-        btypes = {"breadsticks_original":13,"breadsticks_cheesy":14,"breadsticks_cheesy_garlic":15}            
+        btypes = {"Original Breadsticks":13,"Cheesy Breadsticks":14,"Cheesy Garlic Breadsticks":15}   
         for b in breadsticks:
+            print(b)
             sql = "INSERT into BreadStick_Order (breadstick_id,order_id,quantity) values ({},{},{});".format(btypes[b['type']],order_id,b['amount'])
             sql_execute(sql) 
 
         # Generating the SQL drink order to send to backend
-        dsizes = {'small':0,'medium':1,'large':2}
+        dsizes = {'Small':0,'Medium':1,'Large':2}
         dtypes = {"Crush":13,"Mountain Dew":16,"Coke":10}
         for d in drinks:
             sql = "INSERT into Drink_Order (drink_id,order_id,quantity) values ({},{},{});".format(dtypes[d['typeText']]+dsizes[d['size']],order_id,d['amount'])
@@ -175,8 +170,10 @@ def order_analysis(order_id):
         pizza_orders[i] = list(pizza_orders[i])
         txt = ""
         for t in toppings:
-            ttxt = t[0] + " " + str(t[1]) + " " + str(t[2])
+            ttxt = t[0]+" "
             txt = txt + ttxt
+        if(txt==""):
+            txt="No Toppings"
         pizza_orders[i].append(txt)
         pizza_orders[i].append(toppings)
     
@@ -218,9 +215,17 @@ def order_analysis(order_id):
 def ref():
 
     # Wipe the menu clean as order did not get placed
-    for t in ['Pizza_Topping','BreadStick_Order','Drink_Order','Pizza_Order','UserOrder']:
+    for t in ['Pizza_Topping','BreadStick_Order','Drink_Order','Pizza_Order','UserOrder','User']:
         sql = "DELETE from {};".format(t)
         sql_execute(sql)
+    sql = "UPDATE BreadStick set base_data_id=15 where id=15";
+    sql_execute(sql)
+    sql = "UPDATE FoodBaseData set base_calories=160,base_price=1.05 where id=13";
+    sql_execute(sql)
+    sql = "UPDATE FoodBaseData set base_calories=180,base_price=1.20 where id=14";
+    sql_execute(sql)
+    sql = "UPDATE FoodBaseData set base_calories=190,base_price=1.30 where id=15";
+    sql_execute(sql)
     return redirect("/")
     
 # For various SQL queries from tables if need be   
@@ -250,29 +255,21 @@ def qme():
     ds = sql_query(sql)
     for d in ds:
         print(d)
-    return redirect("/")
-
-# Deprecated Page to check for confimed order
-@app.route('/order/confirm/<int:order_id>', methods=['GET', 'POST'])
-def order_confirm(order_id):
-    if request.method=='POST':
-        #set confirmed = true for order
-        redirect("/")
-    login_redirect() #ensure user logged in
-    order_info = order_analysis(order_id)
-    return render_template('order_summary.html',confirm=True,order_info = order_info, username = session['username'])    
+    return redirect("/") 
 
 # Page to go to for order analysis
 @app.route('/order/<int:order_id>', methods=['GET', 'POST'])
 def order_summary(order_id):
-    login_redirect() #ensure user logged in        
+    if not is_logged_in(): #ensure user logged in
+        return redirect('/login')       
     order_info = order_analysis(order_id)
     return render_template('order_summary.html',confirm=False, order_info = order_info, username = session['username'])
 
 # Page for user order history
 @app.route('/user/history/', methods=['GET', 'POST'])
 def order_history():
-    login_redirect() #ensure user logged in
+    if not is_logged_in(): #ensure user logged in
+        return redirect('/login')
     sql = "SELECT uo.id, uo.placed_on from UserOrder uo, User u where u.email=\"{}\" and uo.user_id = u.id".format(session['username'])
     orders = sql_query(sql)
     return render_template('orderhistory.html',orders = orders, username = session['username'])
@@ -280,7 +277,8 @@ def order_history():
 # Page that sends SQL queries to delete orders if need be from backend
 @app.route('/order/delete/<int:order_id>', methods=['GET', 'POST'])
 def order_delete(order_id):
-    login_redirect() #ensure user logged in
+    if not is_logged_in(): #ensure user logged in
+        return redirect('/login')
     sql = "DELETE from Pizza_Topping WHERE Pizza_Topping.pizza_order_id in (SELECT id from Pizza_Order where Pizza_Order.order_id={})".format(order_id)
     sql_execute(sql)   
     sql = "DELETE from Pizza_Order WHERE Pizza_Order.order_id={}".format(order_id)
