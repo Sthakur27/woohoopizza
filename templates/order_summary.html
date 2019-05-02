@@ -157,6 +157,12 @@ h3{
     {% for pizza in order_info[2] %}
       <div><p>{{pizza[1]}} x {{pizza[2]}} Pizza with: {{pizza[3]}}</p></div>
     {% endfor %}
+    {% for drink in order_info[3] %}
+      <div><p>{{drink[1]}} x {{drink[2]}}</p></div>
+    {% endfor %}
+    {% for breadstick in order_info[4] %}
+      <div><p>{{breadstick[1]}} x {{breadstick[2]}}</p></div>
+    {% endfor %}
     <h2>Total Calories</h2>
       <div><p>{{order_info[1]}}  Calories</p></div>
     <h2>Total Price</h2>
