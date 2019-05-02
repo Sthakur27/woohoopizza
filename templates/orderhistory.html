@@ -167,11 +167,13 @@ tr:nth-child(even) {
 <tr>
 <th> Order Id </th>
 <th> Date </th>
+<th> Delete </th>
 </tr>
 {% for order in orders %}
 <TR>
    <TD><a href= "/order/{{order[0]}}">{{order[0]}}</a></TD>
    <TD>{{order[1]}}</TD>
+   <TD><a href="/order/delete/{{order[0]}}">Delete</a></TD>
 </TR>
 {% endfor %}
 </table>
