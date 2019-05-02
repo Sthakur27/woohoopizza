@@ -60,6 +60,8 @@ h3{
 }
 
 .btn{
+  text-align: center;
+  vertical-align: bottom;
   bottom:10px;
   background:#2ecc71;
   width:125px;
@@ -72,8 +74,7 @@ h3{
 
         
   margin-left: auto;
-  float:left;
-  margin-left:16px;
+  margin-right: auto;
   font-weight:800;
   font-size:0.8em;
   }
@@ -141,27 +142,32 @@ h3{
 </style>
 </head>
 
+<!--Redirect function-->
 <script>
   function redirect(){
-    window.location.href = "food_menu.html";
+    window.location.href = "/";
   }
 </script>
-<body>
 
+<body>
+<!--Order Summary page that showcases analytical queries-->
 <h2>Order Summary</h2>
 
+<!--Logout-->
 <div class = "rightcorner">
   <h2><a href = "/logout">Logout</a></h2>
 </div>
 
+<!--User Order History-->
 <div class = "leftcorner">
   <h2><a href = "/user/history">{{session.username}}</a></h2>
 </div>
 
-<div class="column" style="background-color:#52a7e0;">
+<!--The Order as well as calorie count and price-->
+<div class="column";">
   <h2>Item</h2>
   {% for pizza in order_info[2] %}
-    <div><p><h3>{{pizza[1]}} x {{pizza[2]}} Pizza with: {{pizza[3]}}</h3></p></div>
+    <div><p><h3>{{pizza[1]}} x {{pizza[2]}} Pizza with: {{pizza[5]}}</h3></p></div>
   {% endfor %}
   {% for drink in order_info[3] %}
     <div><p><h3>{{drink[1]}} x {{drink[2]}}</h3></p></div>
@@ -174,7 +180,7 @@ h3{
   <h2>Total Price</h2>
     <div><p><h3>${{order_info[0]}}</h3></p></div>
 
-  <input type="submit" name = "submit_button" class="btn" value = "Submit Order">   
+  <!--Back to Menu button-->
   <input type="submit" name = "submit_button" onclick = "redirect()" class="btn" value = "Return to Menu"> 
 
 </div>

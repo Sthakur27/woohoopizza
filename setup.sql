@@ -18,7 +18,7 @@ create table FoodBaseData(
 create table Pizza(
     id int not null auto_increment primary key,
 	base_data_id int not null,
-	pizza_size int,
+	pizza_size varchar(255) not null,
 	FOREIGN KEY (base_data_id) REFERENCES FoodBaseData(id)
 );
 
@@ -88,15 +88,13 @@ create table Drink_Order(
 
 -- insert data into database
 
---four sizes of pizza: small, medium, large, x-large
+--three sizes of pizza: small, medium, large
 insert into FoodBaseData values (1,723,6.15);
-insert into Pizza values (1,1,1);
+insert into Pizza values (1,1,"S");
 insert into FoodBaseData values (2,896,8.15);
-insert into Pizza values (2,2,2);
+insert into Pizza values (2,2,"M");
 insert into FoodBaseData values (3,1128,10.15);
-insert into Pizza values (3,3,3);
-insert into FoodBaseData values (4,1459,12.15);
-insert into Pizza values (4,4,4);
+insert into Pizza values (3,3,"L");
 
 insert into FoodBaseData values (5,89,0.30);
 insert into Topping values (5,5,'Pepperoni');
@@ -125,6 +123,6 @@ insert into Drink values (12,12,'L Crush');
 insert into FoodBaseData values (13,660,5.35);
 insert into FoodBaseData values (14,780,6.70);
 insert into FoodBaseData values (15,750,6.90);
-insert into BreadStick values (13,13,'Original');
+insert into BreadStick values (13,13,'Original Sticks');
 insert into BreadStick values (14,14,'Cheesy Sticks');
 insert into BreadStick values (15,14,'Cheesy Garlic Sticks');

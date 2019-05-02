@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% block page_content %}
 
@@ -61,7 +62,8 @@ h3{
 }
 
 .btn{
-  position:absolute;
+  text-align: center;
+  vertical-align: bottom;
   bottom:10px;
   background:#2ecc71;
   width:125px;
@@ -74,8 +76,7 @@ h3{
 
         
   margin-left: auto;
-  float:left;
-  margin-left:16px;
+  margin-right: auto;
   font-weight:800;
   font-size:0.8em;
   }
@@ -157,26 +158,35 @@ tr:nth-child(even) {
 }
 </style>
 </head>
+
+<!--Script to redirect back to menu upon button press-->
 <script>
   function redirect(){
-    window.location.href = "food_menu.html";
+    window.location.href = "/";
   }
 </script>
-<body>
 
+
+<body>
+<!--Page shows all past pizza orders from user-->
 <h2>Order History for {{username}}</h2>
+
+<!--Logout-->
 <div class = "rightcorner">
   <h2><a href = "/logout">Logout</a></h2>
 </div>
 
+<!--History Page-->
 <div class = "leftcorner">
   <h2><a href = "/user/history">{{session.username}}</a></h2>
 </div>
-<div class = "column" style="background-color:#52a7e0;">
+
+<!--Order History-->
+<div class = "column";">
   <table align = "center">
   <tr>
   <th><h2> Order Id </h2></th>
-  <th> <h2>Date </h2></th>
+  <th><h2 style="text-align: center;">  Date </h2></th>
   <th><h2> Delete </h2></th>
   </tr>
   {% for order in orders %}
@@ -187,6 +197,8 @@ tr:nth-child(even) {
   </TR>
   {% endfor %}
   </table>
+
+  <!--Back to Menu Button-->
   <input type = "submit" name = "menu_return" onclick = "redirect()" class = "btn" value = "Return to Menu">
 </div>
 </body>

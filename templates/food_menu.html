@@ -145,9 +145,8 @@ h3{
 </head>
 
 <script>
-  //Input Pizzas
+  //Pizza class
   var pizzas = [];
-
   function Pizza(p_amount, t_pepperoni, t_mushroom, t_sausage, t_bacon, t_olive, p_size){
     //Number
     this.amount = p_amount;
@@ -164,52 +163,39 @@ h3{
     this.total_toppings = "";
     if(t_pepperoni){
       this.ID += 1;
-      this.total_toppings += "pepperoni, ";
+      this.total_toppings += "Pepperoni, ";
     }
     if(t_mushroom){
       this.ID += 2;
-      this.total_toppings += "mushroom, ";
+      this.total_toppings += "Mushroom, ";
     }
     if(t_sausage){
       this.ID += 4;
-      this.total_toppings += "sausage, ";
+      this.total_toppings += "Sausage, ";
     }
     if(t_bacon){
       this.ID += 8;
-      this.total_toppings += "bacon, ";
+      this.total_toppings += "Bacon, ";
     }
     if(t_olive){
       this.ID += 16;
-      this.total_toppings += "olive, ";
+      this.total_toppings += "Olive, ";
     }
     if(!t_pepperoni && !t_sausage && !t_mushroom && !t_bacon && !t_olive){
-      this.total_toppings = "plain";
+      this.total_toppings = "Plain";
     }
-    if(p_size == "small"){
+    if(p_size == "Small"){
       this.ID += 32;
     }
-    if(p_size == "medium"){
+    if(p_size == "Medium"){
        this.ID += 64;
      }
-    if(p_size == "large"){
+    if(p_size == "Large"){
        this.ID += 128;
     }
 
-    //Puralness
-    this.plural = true;
-    this.pizza_name = "Pizza";
-    if(this.amount == 1){
-      this.plural = false;
-    }
-    if(this.plural){
-      this.pizza_name = "Pizzas";
-    }
-    else{
-      this.pizza_name = "Pizza";
-    }
-
     //Order Text to print
-    this.orderText = this.amount + " x " + p_size + " " + this.total_toppings + " " + this.pizza_name;
+    this.orderText = this.amount + " x " + p_size + " " + this.total_toppings + "<br>";
 
   }
 
@@ -245,6 +231,7 @@ h3{
     }
   }
 
+  //add that pizza
   function addPizza(){
     var size = document.querySelector("input[name=pizza_size]:checked").value;
     var amount = parseInt(document.getElementById("pizza_amount").value);
@@ -287,8 +274,9 @@ h3{
     document.getElementById("pizza_display").innerHTML = pizza_d;
   }
 
-  var drinks = [];
 
+  //drink class
+  var drinks = [];
   function Drink(d_size, d_type, d_amount){
     this.size = d_size;
     this.typeText = "";
@@ -306,17 +294,17 @@ h3{
       this.ID += 4;
       this.typeText = "Coke";
     }
-    if(d_size == "small"){
+    if(d_size == "Small"){
       this.ID += 8;
     }
-    if(d_size == "medium"){
+    if(d_size == "Medium"){
       this.ID += 16;
     }
-    if(d_size == "large"){
+    if(d_size == "Large"){
       this.ID += 32;
     }
     this.orderText = "";
-    this.orderText = d_amount + " x " + d_size + " " + this.typeText + "\n";
+    this.orderText = d_amount + " x " + d_size + " " + this.typeText + "<br>";
   }
 
 
@@ -333,11 +321,13 @@ h3{
     return this.orderText;
   }
 
+  //increment the text for the order amount
   Drink.prototype.incrementOrderAmount = function(x){
     this.amount += x;
     this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
   }
 
+  //check if drink is valid to be pushed to array
   Drink.prototype.checkDrinks = function(){
     var exists = false;
     for(i = 0; i < drinks.length; i++){
@@ -351,6 +341,7 @@ h3{
     }
   }
 
+  //add Drink function
   function addDrink(){
     var size = document.querySelector("input[name=drink_size]:checked").value;
     var amount = parseInt(document.getElementById("drink_amount").value);
@@ -368,15 +359,15 @@ h3{
     document.getElementById("drink_display").innerHTML = drink_d;
   }
 
-
+  //Class breadstick
   var breadsticks = [];
-
   function Breadstick(b_amount, b_type){
     this.amount = b_amount;
     this.type = b_type;
-    this.orderText = this.amount + " x " + b_type;
+    this.orderText = this.amount + " x " + b_type + "<br>";
   }
 
+  //getters
   Breadstick.prototype.getType = function(){
     return this.type;
   }
@@ -389,11 +380,13 @@ h3{
     return this.orderText;
   }
 
+  //Helper function to increment text and not create new line
   Breadstick.prototype.incrementOrderAmount = function(x){
     this.amount += x;
     this.orderText = this.amount + this.orderText.slice(this.orderText.search(" "), this.orderText.length);
   }
 
+  //Checks if breadsticks are valid to push to array
   Breadstick.prototype.checkBreadsticks = function(){
     var exists = false;
     for(i = 0; i < breadsticks.length; i++){
@@ -407,14 +400,14 @@ h3{
     }
   }
 
+
+  //Adds breadsticks when button is clicked
   function addBreadstick(){
     var amount = parseInt(document.getElementById("breadstick_amount").value);
     var type = document.getElementById("breadstick_type").value;
 
     var b = new Breadstick(amount, type);
     b.checkBreadsticks();
-
-
 
     var breadstick_d = "";
 
@@ -424,6 +417,8 @@ h3{
 
     document.getElementById("breadstick_display").innerHTML = breadstick_d;
   }
+
+  //Sends the order to backend via XMLHTTPREQUEST
   function sendData(){
     orderData = [];
     orderData.push(pizzas);
@@ -435,36 +430,41 @@ h3{
     xhr.send(JSON.stringify(
       orderData
     ));
-    console.log("Sent Data");
-    alert("Order Added");
     window.location.href = "/user/history";
   }
 </script>
+
+
 <body>
 
-<h1>Woohoo Pizza Logo Placeholder</h1>
+<!--Main Menu Page-->
+<img src="https://ui-ex.com/images600_/transparent-pizza-logo-3.png" height="100" width="100">
 
+<!--Logout-->
 <div class = "rightcorner">
   <h2><a href = "/logout">Logout</a></h2>
 </div>
 
+<!--User Order History-->
 <div class = "leftcorner">
   <h2><a href = "/user/history">{{session.username}}</a></h2>
 </div>
 
+
+<!--Our Pizza ordering column-->
 <div class="row">
   <div class="column" style="background-color:#52a7e0;">
     <h2>Pizza</h2>
     <label class="container">Small
-      <input type="radio" name="pizza_size" value = "small" checked = "checked">
+      <input type="radio" name="pizza_size" value = "Small" checked = "checked">
       <span class="checkmark"></span>
     </label>
     <label class="container">Medium
-      <input type="radio" name="pizza_size" value = "medium">
+      <input type="radio" name="pizza_size" value = "Medium">
       <span class="checkmark"></span>
     </label>
     <label class="container">Large
-      <input type="radio" name="pizza_size" value = "large">
+      <input type="radio" name="pizza_size" value = "Large">
       <span class="checkmark"></span>
     </label>
 
@@ -486,6 +486,8 @@ h3{
     <input type="submit" name = "submit_button" onclick = "addPizza()" class="btn" value = "Add to Order">  
   </div>
 
+
+  <!--Our breadstick ordering column-->
   <div class="column" style="background-color:#7dbde8;">
     <h2>Breadsticks</h2>
 
@@ -497,27 +499,28 @@ h3{
     </select>
 
     <select id = "breadstick_type">
-    <option value="breadsticks_original">Original</option>
-    <option value="breadsticks_cheesy">Cheesy</option>
-    <option value="breadsticks_cheesy_garlic">Cheesy Garlic</option>
+    <option value="Original Breadsticks">Original</option>
+    <option value="Cheesy Breadsticks">Cheesy</option>
+    <option value="Cheesy Garlic Breadsticks">Cheesy Garlic</option>
     </select>
 
     <input type="submit" name = "submit_button" onclick = "addBreadstick()" class="btn" value = "Add to Order">  
   </div>
 
+  <!--Our drink ordering column-->
   <div class="column" style="background-color:#a8d3f0;">
     <h2>Drinks</h2>
 
     <label class="container">Small
-      <input type="radio" name="drink_size" value = "small" checked = checked>
+      <input type="radio" name="drink_size" value = "Small" checked = checked>
       <span class="checkmark"></span>
     </label>
     <label class="container">Medium
-      <input type="radio" value = "medium" name="drink_size">
+      <input type="radio" value = "Medium" name="drink_size">
       <span class="checkmark"></span>
     </label>
     <label class="container">Large
-      <input type="radio" value = "large" name="drink_size">
+      <input type="radio" value = "Large" name="drink_size">
       <span class="checkmark"></span>
     </label>
 
@@ -536,6 +539,8 @@ h3{
 
     <input type="submit" name = "submit_button" onclick = "addDrink()" class="btn" value = "Add to Order">  
   </div>
+
+  <!--Order displayed in this column-->
   <div class="column" style="background-color:#d4e9f7;">
     <h2>Order</h2>
 
