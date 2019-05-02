@@ -137,7 +137,6 @@ def menu():
         # Generating the SQL breadstick order to send to backend
         btypes = {"Original Breadsticks":13,"Cheesy Breadsticks":14,"Cheesy Garlic Breadsticks":15}   
         for b in breadsticks:
-            print(b)
             sql = "INSERT into BreadStick_Order (breadstick_id,order_id,quantity) values ({},{},{});".format(btypes[b['type']],order_id,b['amount'])
             sql_execute(sql) 
 
@@ -209,53 +208,6 @@ def order_analysis(order_id):
 
     #return all data
     return (["%.2f" % round(total_price, 2),total_calories,pizza_orders,drink_orders,breadstick_orders])
-
-# Refresh page
-@app.route("/refresh")
-def ref():
-
-    # Wipe the menu clean as order did not get placed
-    for t in ['Pizza_Topping','BreadStick_Order','Drink_Order','Pizza_Order','UserOrder','User']:
-        sql = "DELETE from {};".format(t)
-        sql_execute(sql)
-    sql = "UPDATE BreadStick set base_data_id=15 where id=15";
-    sql_execute(sql)
-    sql = "UPDATE FoodBaseData set base_calories=160,base_price=1.05 where id=13";
-    sql_execute(sql)
-    sql = "UPDATE FoodBaseData set base_calories=180,base_price=1.20 where id=14";
-    sql_execute(sql)
-    sql = "UPDATE FoodBaseData set base_calories=190,base_price=1.30 where id=15";
-    sql_execute(sql)
-    return redirect("/")
-    
-# For various SQL queries from tables if need be   
-@app.route("/query")
-def qme():
-    sql = "SELECT * from Drink;"
-    ds = sql_query(sql)
-    for d in ds:
-        print(d)
-    sql = "SELECT * from BreadStick;"
-    ds = sql_query(sql)
-    for d in ds:
-        print(d)
-    sql = "SELECT * from Pizza;"
-    ds = sql_query(sql)
-    for d in ds:
-        print(d)
-    sql = "SELECT * from Topping;"
-    ds = sql_query(sql)
-    for d in ds:
-        print(d)
-    sql = "SELECT * from FoodBaseData;"
-    ds = sql_query(sql)
-    for d in ds:
-        print(d)
-    sql = "SELECT * from UserOrder;"
-    ds = sql_query(sql)
-    for d in ds:
-        print(d)
-    return redirect("/") 
 
 # Page to go to for order analysis
 @app.route('/order/<int:order_id>', methods=['GET', 'POST'])

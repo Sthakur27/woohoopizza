@@ -6,7 +6,6 @@ create table User(
     id int not null auto_increment primary key,
     email varchar(255) not null,
 	password_hash varchar(255) not null,
-	phone_number varchar(255) not null
 );
 
 create table FoodBaseData(
